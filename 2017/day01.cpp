@@ -17,8 +17,9 @@ int captcha(std::string input, next_function nf) {
   return sum;
 }
 
-int main(int argc, char *argv[]) {
-  std::string input = argv[1];
+int main() {
+  std::string input;
+  std::cin >> input;
 
   next_function nf1 = [](int i, int len) -> int { return (i + 1) % len; };
   std::cout << captcha(input, nf1) << std::endl;

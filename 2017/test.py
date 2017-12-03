@@ -19,6 +19,7 @@ all_passed = True
 
 test_day('01', ['1251', '1244'])
 test_day('02', ['53460', '282'])
+test_day('03', ['475', '279138'])
 
 if not all_passed:
     sys.exit(1)

@@ -1,5 +1,5 @@
 #include <iostream>
-#include <set>
+#include <map>
 #include <sstream>
 #include <vector>
 
@@ -28,41 +28,6 @@ std::vector<int> rebalance(std::vector<int> config) {
   return config;
 }
 
-int rebalancings_1(std::vector<int> config) {
-  std::set<std::vector<int>> seen_configs;
-  seen_configs.insert(config);
-
-  for (int rebalancings = 1;; rebalancings++) {
-    config = rebalance(config);
-    if (seen_configs.find(config) != seen_configs.end()) {
-      return rebalancings;
-    }
-    seen_configs.insert(config);
-  }
-}
-
-int rebalancings_2(std::vector<int> config) {
-  std::set<std::vector<int>> seen_configs;
-  seen_configs.insert(config);
-
-  for (;;) {
-    config = rebalance(config);
-    if (seen_configs.find(config) != seen_configs.end()) {
-      break;
-    }
-    seen_configs.insert(config);
-  }
-
-  auto first_reseen_config = config;
-
-  for (int rebalancings = 1;; rebalancings++) {
-    config = rebalance(config);
-    if (config == first_reseen_config) {
-      return rebalancings;
-    }
-  }
-}
-
 int main() {
   std::string line;
   std::getline(std::cin, line);
@@ -74,6 +39,17 @@ int main() {
     config.push_back(n);
   }
 
-  std::cout << rebalancings_1(config) << std::endl;
-  std::cout << rebalancings_2(config) << std::endl;
+  std::map<std::vector<int>, int> seen_configs;
+  seen_configs[config] = 0;
+
+  for (int rebalancings = 1;; rebalancings++) {
+    config = rebalance(config);
+    auto it = seen_configs.find(config);
+    if (it != seen_configs.end()) {
+      std::cout << rebalancings << std::endl;
+      std::cout << (rebalancings - it->second) << std::endl;
+      break;
+    }
+    seen_configs[config] = rebalancings;
+  }
 }

@@ -30,6 +30,7 @@ test_day('04', ['325', '119'])
 test_day('05', ['372139', '29629538'])
 test_day('06', ['14029', '2765'])
 test_day('07', ['vgzejbd', '1226'])
+test_day('08', ['5752', '6366'])
 
 if not all_passed:
     sys.exit(1)

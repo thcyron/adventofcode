@@ -24,23 +24,16 @@
     :u (map #(do [x %]) (range y (+ y len 1)))
     :d (map #(do [x %]) (range y (- y len 1) -1))))
 
-(defn- travel-distance-to [path [dx dy]]
-  (loop [path path
-          dist 0
-          x    0
-          y    0]
-    (let [[dir len] (first path)
-            points   (set (travel-points x y dir len))]
-      (if (contains? points [dx dy])
-        (+ dist (Math/abs (- dx x)) (Math/abs (- dy y)))
-        (let [[x' y'] (move x y dir len)]
-          (recur (rest path)
-                  (+ dist len)
-                  x'
-                  y'))))))
+(defn- travel-distance-to [points [dx dy]]
+  (loop [ps   points
+         dist 0]
+    (let [[x y] (first ps)]
+      (if (and (= x dx) (= y dy))
+        dist
+        (recur (rest ps) (inc dist))))))
 
 (defn- points-for-path [path]
-  (loop [points #{}
+  (loop [points [[0 0]]
          path   path
          x      0
          y      0]
@@ -48,7 +41,7 @@
       points
       (let [[dir len] (first path)
             [x' y']   (move x y dir len)]
-        (recur (set (concat points (travel-points x y dir len)))
+        (recur (concat points (rest (travel-points x y dir len)))
                (rest path)
                x'
                y')))))
@@ -59,19 +52,21 @@
 (defn day03a [paths]
   (->> paths
        (map points-for-path)
+       (map set)
        (apply clojure.set/intersection)
        (map manhattan-distance)
        (filter pos?)
        (apply min)))
 
 (defn day03b [paths]
-  (->> paths
-       (map points-for-path)
-       (apply clojure.set/intersection)
-       (map (fn [[x y]]
-              (apply + (map #(travel-distance-to % [x y]) paths))))
-       (filter pos?)
-       (apply min)))
+  (let [path-points (map points-for-path paths)]
+    (->> path-points
+         (map set)
+         (apply clojure.set/intersection)
+         (map (fn [[x y]]
+                (reduce + (map #(travel-distance-to % [x y]) path-points))))
+         (filter pos?)
+         (apply min))))
 
 (let [paths (->> (str/split (slurp "day03.txt") #"\n")
                  (map path-from-input))]

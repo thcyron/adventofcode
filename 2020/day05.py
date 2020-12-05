@@ -1,7 +1,5 @@
 def parse_pass(p):
-    for a, b in ("F0", "B1", "L0", "R1"):
-        p = p.replace(a, b)
-    return int(p, 2)
+    return int(p.translate(str.maketrans("FBLR", "0101")), 2)
 
 
 if __name__ == "__main__":

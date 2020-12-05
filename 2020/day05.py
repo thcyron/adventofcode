@@ -1,19 +1,12 @@
 def parse_pass(p):
-    return (to_int(p[0:7], "FB"), to_int(p[7:], "LR"))
-
-
-def to_int(code, zo):
-    return int(code.replace(zo[0], "0").replace(zo[1], "1"), 2)
-
-
-def seat_id(row, col):
-    return row * 8 + col
+    for a, b in ("F0", "B1", "L0", "R1"):
+        p = p.replace(a, b)
+    return int(p, 2)
 
 
 if __name__ == "__main__":
     with open("day05.txt") as f:
-        passes = [parse_pass(_) for _ in f.readlines()]
-        ids = {seat_id(r, c) for r, c in passes}
+        ids = {parse_pass(_) for _ in f.readlines()}
         min_id, max_id = min(ids), max(ids)
         print(max_id)
 
